@@ -1,0 +1,77 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+
+<div style="max-width:680px; margin:0 auto;">
+
+    <!-- Back button -->
+    <a href="/" style="color:#667eea; text-decoration:none; font-size:14px; font-weight:500;">
+        ← Back to Dashboard
+    </a>
+
+    <div class="card" style="margin-top:16px;">
+
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+            <div>
+                <h1 class="page-title">{{ task.title }}</h1>
+                <span class="badge badge-{{ task.status }}" style="margin-top:8px;">
+                    {% if task.status == 'pending' %}⏳
+                    {% elif task.status == 'in_progress' %}🔄
+                    {% else %}✅{% endif %}
+                    {{ task.get_status_display }}
+                </span>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <a href="/task/edit/{{ task.pk }}/" class="btn btn-warning">✏️ Edit</a>
+                <a href="/task/delete/{{ task.pk }}/" class="btn btn-danger">🗑️ Delete</a>
+            </div>
+        </div>
+
+        <hr style="border:none; border-top:1px solid #f0f0f0; margin-bottom:24px;">
+
+        <!-- Description -->
+        <div style="margin-bottom:24px;">
+            <p style="font-size:12px; text-transform:uppercase; letter-spacing:0.8px; color:#aaa; font-weight:600; margin-bottom:8px;">📝 Description</p>
+            <p style="font-size:15px; color:#444; line-height:1.7;">
+                {% if task.description %}
+                    {{ task.description }}
+                {% else %}
+                    <span style="color:#bbb; font-style:italic;">No description provided.</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Info Grid -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+            <div style="background:#f8f9ff; border-radius:10px; padding:16px;">
+                <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:#aaa; font-weight:600; margin-bottom:6px;">📅 Due Date</p>
+                <p style="font-size:16px; font-weight:600; color:#333;">{{ task.due_date|date:"M d, Y" }}</p>
+                <p style="font-size:13px; color:#888;">{{ task.due_date|date:"H:i" }}</p>
+            </div>
+
+            <div style="background:#f8f9ff; border-radius:10px; padding:16px;">
+                <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:#aaa; font-weight:600; margin-bottom:6px;">🔖 Status</p>
+                <span class="badge badge-{{ task.status }}" style="font-size:14px;">
+                    {{ task.get_status_display }}
+                </span>
+            </div>
+
+            <div style="background:#f8f9ff; border-radius:10px; padding:16px;">
+                <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:#aaa; font-weight:600; margin-bottom:6px;">🕐 Created At</p>
+                <p style="font-size:15px; font-weight:600; color:#333;">{{ task.created_at|date:"M d, Y" }}</p>
+                <p style="font-size:13px; color:#888;">{{ task.created_at|date:"H:i" }}</p>
+            </div>
+
+            <div style="background:#f8f9ff; border-radius:10px; padding:16px;">
+                <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:#aaa; font-weight:600; margin-bottom:6px;">✏️ Last Modified</p>
+                <p style="font-size:15px; font-weight:600; color:#333;">{{ task.modified_at|date:"M d, Y" }}</p>
+                <p style="font-size:13px; color:#888;">{{ task.modified_at|date:"H:i" }}</p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

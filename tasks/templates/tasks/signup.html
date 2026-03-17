@@ -1,0 +1,30 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+<div style="max-width:420px; margin:60px auto;">
+    <div class="card">
+        <h2 class="page-title" style="text-align:center;">Create Account 🚀</h2>
+        <p style="text-align:center; color:#888; margin-bottom:24px;">Join TaskMaster today — it's free!</p>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="alert alert-danger">{{ field.errors }}</div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <small style="color:#aaa; font-size:12px;">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button class="btn btn-primary" type="submit" style="width:100%; padding:12px; font-size:16px;">
+                Create Account ✅
+            </button>
+        </form>
+        <p style="text-align:center; margin-top:20px; font-size:14px; color:#888;">
+            Already have an account? <a href="/login/" style="color:#667eea; font-weight:600;">Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

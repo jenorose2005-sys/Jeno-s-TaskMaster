@@ -1,0 +1,159 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+
+<h1 class="page-title">My Tasks 📋</h1>
+<p class="page-subtitle">Manage and track all your daily tasks</p>
+
+<!-- Stats Row -->
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-number" style="color:#667eea;">{{ tasks.count }}</div>
+        <div class="stat-label">Total Tasks</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" style="color:#ffc107;">{{ pending_count }}</div>
+        <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" style="color:#007bff;">{{ inprogress_count }}</div>
+        <div class="stat-label">In Progress</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" style="color:#28a745;">{{ completed_count }}</div>
+        <div class="stat-label">Completed</div>
+    </div>
+</div>
+
+<!-- Progress Bar -->
+{% if tasks.count > 0 %}
+<div class="card" style="margin-bottom:24px; padding:20px 32px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <span style="font-weight:600; color:#555; font-size:14px;">📊 Overall Progress</span>
+        <span style="font-weight:700; color:#667eea; font-size:16px;">
+            {{ completed_count }} / {{ tasks.count }} tasks completed
+        </span>
+    </div>
+    <div style="background:#f0f0f0; border-radius:50px; height:14px; overflow:hidden;">
+        <div style="height:100%; border-radius:50px; background:linear-gradient(90deg,#667eea,#764ba2); width:{% widthratio completed_count tasks.count 100 %}%; transition:width 1s ease;"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:6px;">
+        <span style="font-size:12px; color:#aaa;">0%</span>
+        <span style="font-size:13px; font-weight:600; color:#667eea;">{% widthratio completed_count tasks.count 100 %}% Complete</span>
+        <span style="font-size:12px; color:#aaa;">100%</span>
+    </div>
+</div>
+{% endif %}
+
+<!-- Search and Filter -->
+<div class="card">
+    <form method="get">
+        <div class="search-bar">
+            <input name="q" value="{{ query|default:'' }}" placeholder="🔍 Search by title or description...">
+            <select name="status" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                <option value="pending"     {% if status == 'pending' %}selected{% endif %}>⏳ Pending</option>
+                <option value="in_progress" {% if status == 'in_progress' %}selected{% endif %}>🔄 In Progress</option>
+                <option value="completed"   {% if status == 'completed' %}selected{% endif %}>✅ Completed</option>
+            </select>
+            <button class="btn btn-primary" type="submit">Search</button>
+            <a href="/" class="btn btn-warning">Clear</a>
+        </div>
+    </form>
+
+    {% if tasks %}
+    <table>
+        <thead>
+            <tr>
+                <th style="width:40px;">#</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th style="width:160px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+
+            {% if task.is_overdue %}
+            <tr style="background:#fff5f5;">
+            {% else %}
+            <tr>
+            {% endif %}
+
+                <td style="color:#aaa;">{{ forloop.counter }}</td>
+
+                <td>
+                    <a href="/task/{{ task.pk }}/" style="font-weight:600; color:#333; text-decoration:none;">
+                        {{ task.title }}
+                    </a>
+
+                    {% if task.is_overdue %}
+                        <br><span style="color:#dc3545; font-size:11px; font-weight:600;">⚠️ OVERDUE</span>
+                    {% endif %}
+                </td>
+
+                <td style="color:#888;">{{ task.description|truncatechars:40 }}</td>
+
+                {% if task.is_overdue %}
+                <td style="color:#dc3545; font-weight:600; white-space:nowrap;">
+                {% else %}
+                <td style="color:#555; white-space:nowrap;">
+                {% endif %}
+                    📅 {{ task.due_date|date:"M d, Y" }}<br>
+                    <small>{{ task.due_date|date:"H:i" }}</small>
+                </td>
+
+                <td>
+                    <span class="badge badge-{{ task.status }}">
+                        {% if task.status == 'pending' %}⏳
+                        {% elif task.status == 'in_progress' %}🔄
+                        {% else %}✅{% endif %}
+                        {{ task.get_status_display }}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="badge badge-{{ task.priority }}">
+                        {% if task.priority == 'high' %}🔴
+                        {% elif task.priority == 'medium' %}🟡
+                        {% else %}🟢{% endif %}
+                        {{ task.get_priority_display }}
+                    </span>
+                </td>
+
+                <td>
+                    <div style="display:flex; gap:6px;">
+                        <a href="/task/edit/{{ task.pk }}/" class="btn btn-warning btn-sm">✏️ Edit</a>
+                        <a href="/task/delete/{{ task.pk }}/" class="btn btn-danger btn-sm">🗑️</a>
+                    </div>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <p>No tasks found. Start by creating your first task!</p>
+        <a href="/task/create/" class="btn btn-primary">+ Create New Task</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+{% if messages %}
+{% for message in messages %}
+    {% if 'created' in message.message %}
+    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#667eea','#764ba2','#f7971e','#56ab2f','#ff416c'] });
+    {% endif %}
+{% endfor %}
+{% endif %}
+</script>
+
+{% endblock %}

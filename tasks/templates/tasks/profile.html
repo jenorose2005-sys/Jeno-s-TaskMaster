@@ -1,0 +1,70 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+
+<div style="max-width:680px; margin:0 auto;">
+    <h1 class="page-title">👤 My Profile</h1>
+    <p class="page-subtitle">Your TaskMaster account overview</p>
+
+    <!-- User Card -->
+    <div class="card" style="margin-bottom:24px; text-align:center; padding:40px;">
+        <div style="width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,#667eea,#764ba2); margin:0 auto 16px; display:flex; align-items:center; justify-content:center;">
+            <span style="font-size:36px; color:white; font-weight:700;">
+                {{ request.user.username|first|upper }}
+            </span>
+        </div>
+        <h2 style="font-size:24px; font-weight:700; color:#2d2d2d;">{{ request.user.username }}</h2>
+        <p style="color:#888; font-size:14px; margin-top:4px;">
+            📅 Member since {{ request.user.date_joined|date:"M d, Y" }}
+        </p>
+        <!-- Completion rate badge -->
+        <div style="margin-top:16px;">
+            <span style="background:linear-gradient(135deg,#667eea,#764ba2); color:white; padding:8px 24px; border-radius:20px; font-size:14px; font-weight:600;">
+                🏆 {{ completion_rate }}% Completion Rate
+            </span>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-number" style="color:#667eea;">{{ total_tasks }}</div>
+            <div class="stat-label">Total Tasks</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color:#28a745;">{{ completed_tasks }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color:#ffc107;">{{ pending_tasks }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color:#dc3545;">{{ overdue_tasks }}</div>
+            <div class="stat-label">Overdue</div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="card" style="padding:24px 32px;">
+        <p style="font-weight:600; color:#555; margin-bottom:12px;">📊 Completion Progress</p>
+        <div style="background:#f0f0f0; border-radius:50px; height:16px; overflow:hidden;">
+            <div style="
+                height:100%;
+                border-radius:50px;
+                background:linear-gradient(90deg,#667eea,#764ba2);
+                width:{{ completion_rate }}%;
+                transition: width 1s ease;
+            "></div>
+        </div>
+        <p style="text-align:center; margin-top:10px; font-weight:700; color:#667eea;">
+            {{ completion_rate }}% of tasks completed
+        </p>
+
+        <div style="margin-top:24px; text-align:center;">
+            <a href="/" class="btn btn-primary" style="margin-right:10px;">📋 View Tasks</a>
+            <a href="/task/create/" class="btn btn-success">➕ New Task</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

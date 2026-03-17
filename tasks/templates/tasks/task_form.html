@@ -1,0 +1,87 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+
+<div style="max-width:600px; margin:0 auto;">
+    <div style="margin-bottom:20px;">
+        <h1 class="page-title">
+            {% if action == 'Create' %}➕ Create New Task{% else %}✏️ Edit Task{% endif %}
+        </h1>
+        <p class="page-subtitle">
+            {% if action == 'Create' %}Add a new task to your list{% else %}Update your task details{% endif %}
+        </p>
+    </div>
+
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>📌 Task Title</label>
+                <input type="text" name="title" value="{{ form.title.value|default:'' }}"
+                    placeholder="Enter task title..." required>
+                {% if form.title.errors %}
+                    <div class="alert alert-danger">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label>📝 Description</label>
+                <textarea name="description" rows="4"
+                    placeholder="Describe your task...">{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+                    <div class="alert alert-danger">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label>📅 Due Date & Time</label>
+                <input type="datetime-local" name="due_date"
+                    value="{{ form.due_date.value|default:'' }}" required>
+                {% if form.due_date.errors %}
+                    <div class="alert alert-danger">{{ form.due_date.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label>🔖 Status</label>
+                <select name="status">
+                    <option value="pending"
+                        {% if form.status.value == 'pending' %}selected{% endif %}>
+                        ⏳ Pending
+                    </option>
+                    <option value="in_progress"
+                        {% if form.status.value == 'in_progress' %}selected{% endif %}>
+                        🔄 In Progress
+                    </option>
+                    <option value="completed"
+                        {% if form.status.value == 'completed' %}selected{% endif %}>
+                        ✅ Completed
+                    </option>
+                </select>
+                {% if form.status.errors %}
+                    <div class="alert alert-danger">{{ form.status.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+    <label>🎯 Priority</label>
+    <select name="priority">
+        <option value="low"    {% if form.priority.value == 'low' %}selected{% endif %}>🟢 Low</option>
+        <option value="medium" {% if form.priority.value == 'medium' %}selected{% endif %}>🟡 Medium</option>
+        <option value="high"   {% if form.priority.value == 'high' %}selected{% endif %}>🔴 High</option>
+    </select>
+</div>
+
+            <div style="display:flex; gap:12px; margin-top:10px;">
+                <button type="submit" class="btn btn-primary" style="flex:1; padding:12px; font-size:15px;">
+                    {% if action == 'Create' %}➕ Create Task{% else %}💾 Save Changes{% endif %}
+                </button>
+                <a href="/" class="btn btn-warning" style="padding:12px 24px; font-size:15px;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

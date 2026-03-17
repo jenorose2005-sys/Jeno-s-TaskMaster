@@ -1,0 +1,49 @@
+{% extends 'tasks/base.html' %}
+{% block content %}
+
+<div style="max-width:500px; margin:60px auto;">
+
+    <a href="/" style="color:#667eea; text-decoration:none; font-size:14px; font-weight:500;">
+        ← Back to Dashboard
+    </a>
+
+    <div class="card" style="margin-top:16px; text-align:center;">
+
+        <!-- Warning Icon -->
+        <div style="font-size:64px; margin-bottom:16px;">🗑️</div>
+
+        <h1 class="page-title" style="color:#dc3545;">Delete Task?</h1>
+        <p style="color:#888; margin-bottom:8px; font-size:15px;">
+            You are about to delete:
+        </p>
+
+        <!-- Task name highlight -->
+        <div style="background:#fff3cd; border-radius:10px; padding:14px 20px; margin:20px 0; border-left:4px solid #ffc107;">
+            <p style="font-size:17px; font-weight:700; color:#856404;">
+                "{{ task.title }}"
+            </p>
+        </div>
+
+        <div style="background:#f8d7da; border-radius:10px; padding:12px; margin-bottom:28px; border-left:4px solid #dc3545;">
+            <p style="color:#721c24; font-size:14px; font-weight:500;">
+                ⚠️ This action cannot be undone. The task will be permanently deleted.
+            </p>
+        </div>
+
+        <!-- Buttons -->
+        <form method="post">
+            {% csrf_token %}
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <a href="/" class="btn btn-warning" style="padding:12px 28px; font-size:15px;">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-danger" style="padding:12px 28px; font-size:15px;">
+                    🗑️ Yes, Delete
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
